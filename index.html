@@ -1,45 +1,157 @@
-<main class="card" role="main" aria-label="Backtest Bandit landing">
-  <!-- Coming Soon badge -->
-  <span class="badge">Coming Soon</span>
-  <br>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Backtest Bandit — Coming Soon</title>
 
-  <!-- Logo -->
-  <picture>
-    <source type="image/webp" srcset="/assets/img/Ticker.webp" />
-    <img
-      class="hero-logo"
-      src="/assets/img/Ticker.webp"
-      alt="Backtest Bandit logo: futuristic robot with bandit visor testing a brass ticker that streams glowing binary tape"
-      width="420"
-      height="420"
-      loading="eager"
-      decoding="async"
-    />
-  </picture>
+  <meta name="description" content="Blazing fast market testing. Backtest years in seconds. Trade with confidence. Backtest Bandit is coming soon." />
+  <meta property="og:title" content="Backtest Bandit — Coming Soon" />
+  <meta property="og:description" content="Blazing fast market testing. Backtest years in seconds. Trade with confidence. Backtest Bandit is coming soon." />
+  <meta property="og:type" content="website" />
+  <meta property="og:image" content="/og-image.png" />
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+  <meta name="theme-color" content="#0B0F1A" />
 
-  <!-- Headline -->
-  <h1 class="logo">
-    <span class="logo-dot" aria-hidden="true"></span>
-    Backtest Bandit
-  </h1>
+  <style>
+    :root {
+      --bg: #0b0f1a;
+      --card: #121828;
+      --text: #e6edf3;
+      --muted: #9fb0c3;
+      --accent: #4cc9f0;
+      --accent2: #80ffea;
+      --ring: rgba(76,201,240,.35);
+    }
+    * { box-sizing: border-box; }
+    html, body { height: 100%; }
+    body {
+      margin: 0;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial, "Noto Sans", "Apple Color Emoji", "Segoe UI Emoji";
+      background:
+        radial-gradient(1200px 800px at 80% -10%, rgba(128,255,234,.08), transparent 60%),
+        radial-gradient(1000px 700px at -10% 110%, rgba(76,201,240,.08), transparent 60%),
+        var(--bg);
+      color: var(--text);
+      display: grid;
+      place-items: center;
+      padding: 24px;
+    }
+    .card {
+      width: min(760px, 94vw);
+      background: linear-gradient(180deg, rgba(255,255,255,.03), transparent), var(--card);
+      border: 1px solid rgba(255,255,255,.06);
+      border-radius: 20px;
+      padding: 28px 24px 22px;
+      box-shadow: 0 10px 40px rgba(0,0,0,.45);
+      text-align: center;
+    }
+    .badge {
+      display: inline-block;
+      padding: 6px 12px;
+      border-radius: 999px;
+      background: rgba(76,201,240,.12);
+      color: var(--accent);
+      font-weight: 700;
+      font-size: 12px;
+      letter-spacing: .4px;
+      border: 1px solid rgba(76,201,240,.28);
+      margin-bottom: 10px;
+    }
+    .hero-logo {
+      max-width: 520px;
+      width: 90%;
+      height: auto;
+      display: block;
+      margin: 12px auto 6px;
+      border-radius: 10px;
+    }
+    h1 {
+      margin: 8px 0 6px;
+      font-size: clamp(32px, 6vw, 44px);
+      line-height: 1.05;
+      font-weight: 900;
+      letter-spacing: .3px;
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .logo-dot {
+      width: 10px; height: 10px; border-radius: 50%;
+      background: radial-gradient(circle at 30% 30%, var(--accent2), var(--accent));
+      box-shadow: 0 0 14px rgba(128,255,234,.6);
+    }
+    .tagline {
+      font-size: clamp(18px, 3vw, 22px);
+      margin: 10px 0 14px;
+      background: linear-gradient(90deg, var(--accent), var(--accent2));
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      font-weight: 800;
+    }
+    .subtitle { color: var(--muted); margin: 0 0 18px; font-size: clamp(16px, 2.5vw, 18px); }
+    .cta-row { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; }
+    .btn, .link {
+      display: inline-flex; align-items: center; justify-content: center;
+      height: 44px; padding: 0 16px; border-radius: 10px; font-weight: 700; text-decoration: none;
+      border: 1px solid rgba(255,255,255,.12);
+      transition: transform .06s ease, box-shadow .2s ease, border-color .2s ease;
+    }
+    .btn {
+      background: linear-gradient(180deg, rgba(76,201,240,.20), rgba(76,201,240,.08));
+      color: var(--text);
+      box-shadow: 0 0 0 0 var(--ring);
+    }
+    .btn:hover { transform: translateY(-1px); border-color: rgba(128,255,234,.5); box-shadow: 0 6px 30px var(--ring); }
+    .link { background: transparent; color: var(--muted); }
+    .meta { margin-top: 18px; font-size: 12px; color: var(--muted); }
+    .footer {
+      margin-top: 12px;
+      display: flex; gap: 10px; flex-wrap: wrap; justify-content: space-between;
+      color: var(--muted); font-size: 12px;
+      border-top: 1px solid rgba(255,255,255,.06); padding-top: 12px;
+    }
+  </style>
+</head>
+<body>
+  <main class="card" role="main" aria-label="Backtest Bandit landing">
+    <span class="badge">Coming Soon</span>
 
-  <!-- Tagline -->
-  <p class="tagline">Backtest years in seconds. Trade with confidence.</p>
-  <p class="subtitle">
-    A playful, powerful engine for blazing-fast simulations and live-trade execution.
-    We steal insights from the past—so you can act in the present.
-  </p>
+    <picture>
+      <source type="image/webp" srcset="/assets/img/Ticker.webp" />
+      <img
+        class="hero-logo"
+        src="/assets/img/Ticker.webp"
+        alt="Backtest Bandit logo: futuristic robot with bandit visor testing a brass ticker streaming glowing binary tape"
+        width="520" height="520"
+        loading="eager" decoding="async"
+      />
+    </picture>
 
-  <!-- Call to actions -->
-  <div class="cta-row">
-    <a class="btn" href="mailto:ken@quickcodelearning.com?subject=Backtest%20Bandit%20—%20Keep%20me%20posted">Get launch updates</a>
-    <a class="link" href="https://quickcodelearning.com" target="_blank" rel="noopener">Visit Quick Code Learning</a>
-  </div>
+    <h1>
+      <span class="logo-dot" aria-hidden="true"></span>
+      Backtest Bandit
+    </h1>
 
-  <!-- Footer -->
-  <div class="meta">© <span id="y"></span> Backtest Bandit. All rights reserved.</div>
-  <div class="footer">
-    <span>Made for builders who like speed tests and smart trades.</span>
-    <span>Contact: ken@quickcodelearning.com</span>
-  </div>
-</main>
+    <p class="tagline">Backtest years in seconds. Trade with confidence.</p>
+    <p class="subtitle">
+      A playful, powerful engine for blazing-fast simulations and live-trade execution.
+      We steal insights from the past—so you can act in the present.
+    </p>
+
+    <div class="cta-row">
+      <a class="btn" href="mailto:ken@quickcodelearning.com?subject=Backtest%20Bandit%20—%20Keep%20me%20posted">Get launch updates</a>
+      <a class="link" href="https://quickcodelearning.com" target="_blank" rel="noopener">Visit Quick Code Learning</a>
+    </div>
+
+    <div class="meta">© <span id="y"></span> Backtest Bandit. All rights reserved.</div>
+    <div class="footer">
+      <span>Made for builders who like speed tests and smart trades.</span>
+      <span>Contact: ken@quickcodelearning.com</span>
+    </div>
+  </main>
+
+  <script>document.getElementById('y').textContent = new Date().getFullYear();</script>
+</body>
+</html>
