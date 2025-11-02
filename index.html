@@ -9,8 +9,8 @@
   <meta property="og:title" content="Backtest Bandit — Coming Soon" />
   <meta property="og:description" content="Blazing fast market testing. Backtest years in seconds. Trade with confidence. Backtest Bandit is coming soon." />
   <meta property="og:type" content="website" />
-  <meta property="og:image" content="/og-image.png" />
-  <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+  <meta property="og:image" content="./og-image.png" />
+  <link rel="icon" href="./favicon.svg" type="image/svg+xml" />
   <meta name="theme-color" content="#0B0F1A" />
 
   <style>
@@ -27,17 +27,21 @@
     * { box-sizing: border-box; }
     html, body { height: 100%; }
     body {
-      margin: 0;
-      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial, "Noto Sans", "Apple Color Emoji", "Segoe UI Emoji";
-      background:
-        radial-gradient(1200px 800px at 80% -10%, rgba(128,255,234,.08), transparent 60%),
-        radial-gradient(1000px 700px at -10% 110%, rgba(76,201,240,.08), transparent 60%),
-        var(--bg);
-      color: var(--text);
-      display: grid;
-      place-items: center;
-      padding: 24px;
-    }
+  margin: 0;
+  font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial, "Noto Sans", "Apple Color Emoji", "Segoe UI Emoji";
+  background:
+    radial-gradient(1200px 800px at 80% -10%, rgba(128,255,234,.08), transparent 60%),
+    radial-gradient(1000px 700px at -10% 110%, rgba(76,201,240,.08), transparent 60%),
+    var(--bg);
+  color: var(--text);
+
+  /* ⬇️ Top-align the content instead of centering it vertically */
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;   /* center horizontally */
+  align-items: flex-start;   /* start at the top */
+  padding: 24px;
+}
     .card {
       width: min(760px, 94vw);
       background: linear-gradient(180deg, rgba(255,255,255,.03), transparent), var(--card);
@@ -159,17 +163,17 @@
   <main class="card" role="main" aria-label="Backtest Bandit landing">
     <span class="badge">Coming Soon</span>
 
-    <!-- Smooth left-to-right reveal chart (starts when visible) -->
+    <!-- Smooth left-to-right reveal chart -->
     <section class="stage" id="chart-stage" aria-label="Animated market chart">
       <canvas id="chart" aria-hidden="true"></canvas>
       <div class="hud" id="hud">Waiting to start…</div>
     </section>
 
     <picture>
-      <source type="image/webp" srcset="/assets/img/Ticker.webp" />
+      <source type="image/webp" srcset="./assets/img/Ticker.webp" />
       <img
         class="hero-logo"
-        src="/assets/img/Ticker.webp"
+        src="./assets/img/Ticker.webp"
         alt="Backtest Bandit logo: futuristic robot with bandit visor testing a brass ticker streaming glowing binary tape"
         width="520" height="520"
         loading="eager" decoding="async"
@@ -199,20 +203,20 @@
     </div>
   </main>
 
-  <!-- Chart.js (deferred) -->
-  <script defer src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+  <!-- Chart.js (local) -->
+  <script defer src="./assets/js/chart.umd.min.js"></script>
   <script>
     document.getElementById('y').textContent = new Date().getFullYear();
 
-    // --- Animation setup wrapped in a function so we can start it on first visibility ---
+    // Animation setup
     function startChartAnimation() {
       const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-      const MAX_POINTS   = 220;                             // width samples
-      const DRAW_TIME_MS = prefersReduced ? 0 : 6500;       // full reveal duration
-      const LOOP         = true;                            // keep replaying
-      const START_DELAY  = prefersReduced ? 0 : 500;        // delay before drawing
-      const VOL          = 0.9;                             // vertical volatility
-      const BASELINE     = 50;                              // vertical center
+      const MAX_POINTS   = 220;
+      const DRAW_TIME_MS = prefersReduced ? 0 : 6500;
+      const LOOP         = true;
+      const START_DELAY  = prefersReduced ? 0 : 500;
+      const VOL          = 0.9;
+      const BASELINE     = 50;
 
       const labels = Array(MAX_POINTS).fill('');
       const data   = Array(MAX_POINTS).fill(null);
@@ -222,26 +226,21 @@
 
       const chart = new Chart(ctx, {
         type: 'line',
-        data: {
-          labels,
-          datasets: [{
-            data,
-            borderColor: '#80ffea',
-            borderWidth: 2,
-            tension: 0.42,
-            pointRadius: 0,
-            fill: { target: 'origin', above: 'rgba(128,255,234,0.10)' },
-          }]
-        },
+        data: { labels, datasets: [{
+          data,
+          borderColor: '#80ffea',
+          borderWidth: 2,
+          tension: 0.42,
+          pointRadius: 0,
+          fill: { target: 'origin', above: 'rgba(128,255,234,0.10)' },
+        }]},
         options: {
           responsive: true,
           maintainAspectRatio: false,
           animation: false,
           plugins: { legend: { display: false } },
-          scales: {
-            x: { display: false, grid: { display: false } },
-            y: { display: false, grid: { display: false } }
-          }
+          scales: { x: { display: false, grid: { display: false } },
+                    y: { display: false, grid: { display: false } } }
         }
       });
 
@@ -249,7 +248,7 @@
         let y = start, v = 0;
         while (true) {
           v += (Math.random() - 0.5) * VOL;
-          v *= 0.9;               // friction for smoothness
+          v *= 0.9;
           y += v;
           y = Math.max(10, Math.min(90, y));
           yield y;
@@ -257,9 +256,7 @@
       }
       const walker = randomWalk();
 
-      let idx = 0;
-      let rafId = null;
-      let lastTs = 0;
+      let idx = 0, rafId = null, lastTs = 0;
       const stepInterval = DRAW_TIME_MS > 0 ? (DRAW_TIME_MS / MAX_POINTS) : 0;
 
       function reset() {
@@ -272,23 +269,18 @@
       function step(ts) {
         if (stepInterval === 0) {
           while (idx < MAX_POINTS) data[idx++] = walker.next().value;
-          chart.update('none');
-          hud.textContent = 'Complete';
-          return;
+          chart.update('none'); hud.textContent = 'Complete'; return;
         }
         if (!lastTs) lastTs = ts;
         const elapsed = ts - lastTs;
         if (elapsed >= stepInterval) {
           lastTs = ts;
           if (idx < MAX_POINTS) {
-            data[idx] = walker.next().value;
-            idx++;
-            chart.update('none');
-            hud.textContent = `Drawing ${idx}/${MAX_POINTS}`;
+            data[idx] = walker.next().value; idx++;
+            chart.update('none'); hud.textContent = `Drawing ${idx}/${MAX_POINTS}`;
           } else {
             hud.textContent = 'Complete';
-            cancelAnimationFrame(rafId);
-            rafId = null;
+            cancelAnimationFrame(rafId); rafId = null;
             if (LOOP) {
               setTimeout(() => {
                 reset();
@@ -305,30 +297,18 @@
       setTimeout(() => { lastTs = 0; rafId = requestAnimationFrame(step); }, START_DELAY);
     }
 
-    // --- Start animation only when the stage is visible ---
-    window.addEventListener('load', () => {
-      const stage = document.getElementById('chart-stage');
+    // Unconditional start on DOM ready
+    window.addEventListener('DOMContentLoaded', () => {
       const hud = document.getElementById('hud');
-      let started = false;
-
-      // If Chart.js failed to load for some reason, bail gracefully
-      if (!window.Chart) {
+      if (typeof window.Chart === 'undefined') {
         hud.textContent = 'Chart library failed to load.';
         return;
       }
-
-      const observer = new IntersectionObserver((entries, obs) => {
-        for (const entry of entries) {
-          if (entry.isIntersecting && entry.intersectionRatio > 0.4 && !started) {
-            started = true;
-            hud.textContent = 'Starting…';
-            startChartAnimation();
-            obs.unobserve(stage); // fire once
-          }
-        }
-      }, { threshold: [0, 0.4, 1] });
-
-      observer.observe(stage);
+      hud.textContent = 'Starting…';
+      setTimeout(() => {
+        try { startChartAnimation(); }
+        catch (e) { console.error(e); hud.textContent = 'Chart error. See console.'; }
+      }, 50);
     });
   </script>
 </body>
