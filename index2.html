@@ -1,0 +1,148 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Left-to-Right Chart Reveal</title>
+<style>
+  html, body {
+    height: 100%; margin: 0; background:#0a0e13; overflow:hidden;
+    font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+  }
+  .wrap {
+    position: fixed; inset: 0; display:flex; align-items:center; justify-content:center;
+    padding: clamp(8px, 2vw, 24px);
+  }
+  .stage {
+    width: min(1200px, 96vw); height: min(600px, 70vh); position: relative;
+    background: radial-gradient(1200px 500px at 50% 100%, rgba(0,255,204,0.06), transparent 60%),
+                linear-gradient(180deg, #0a0e13 0%, #0b1017 100%);
+    border: 1px solid #1b2533; border-radius: 16px; box-shadow: 0 10px 40px rgba(0,0,0,0.35);
+    overflow: hidden;
+  }
+  .hud {
+    position:absolute; inset:auto 12px 12px auto; color:#9fb4c9; font-size:12px; opacity:.75;
+    background:#0e1622; border:1px solid #1f2b3a; border-radius:10px; padding:6px 10px;
+  }
+  canvas { filter: drop-shadow(0 0 8px #00ffcc) drop-shadow(0 0 16px #00ffcc40); }
+.stage { animation: fadeIn 1s ease-out forwards; opacity:0; }
+@keyframes fadeIn { to { opacity:1; } }
+
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="stage">
+      <canvas id="chart"></canvas>
+      <div class="hud" id="hud">Waiting…</div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+  <script>
+    // ---------- CONFIG ----------
+    const MAX_POINTS   = 240;       // how many samples fill the width
+    const DRAW_TIME_MS = 6000;      // total time to reveal the full line
+    const LOOP         = true;      // restart after finish
+    const START_DELAY  = 600;       // blank screen delay before drawing begins (ms)
+    const VOL          = 0.9;       // vertical volatility of random walk (higher = wavier)
+    const BASELINE     = 50;        // vertical center of the line
+
+    // ---------- PREPARE DATA ARRAYS ----------
+    const labels = Array(MAX_POINTS).fill("");        // full width reserved
+    const data   = Array(MAX_POINTS).fill(null);      // all null -> blank, then reveal
+
+    // ---------- CHART SETUP ----------
+    const ctx = document.getElementById('chart');
+    const chart = new Chart(ctx, {
+      type: 'line',
+      data: {
+        labels,
+        datasets: [{
+          data,
+          borderColor: '#00ffcc',
+          borderWidth: 2,
+          tension: 0.4,                     // smooth curve
+          fill: { target: 'origin', above: 'rgba(0,255,204,0.10)' },
+          pointRadius: 0,                   // clean line (no dots)
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        animation: false,                   // we control drawing with JS
+        plugins: { legend: { display:false } },
+        scales: {
+          x: { display:false, grid: { display:false } },
+          y: { display:false, grid: { display:false } }
+        }
+      }
+    });
+
+    const hud = document.getElementById('hud');
+
+    // ---------- RANDOM-WALK GENERATOR (smooth up/down) ----------
+    function* randomWalk(start = BASELINE) {
+      let y = start, vel = 0;
+      while (true) {
+        // smooth noise: integrate small velocity with friction
+        vel += (Math.random() - 0.5) * VOL;
+        vel *= 0.9;                   // friction
+        y   += vel;
+        // gentle clamp to keep within a pleasing band
+        y = Math.max(10, Math.min(90, y));
+        yield y;
+      }
+    }
+
+    // ---------- DRAW CONTROLLER ----------
+    let idx = 0;
+    let rafId = null;
+    const stepInterval = DRAW_TIME_MS / MAX_POINTS;
+    let last = 0;
+    const walker = randomWalk();
+
+    function reset() {
+      // clear the dataset back to nulls (blank screen)
+      for (let i = 0; i < MAX_POINTS; i++) data[i] = null;
+      idx = 0;
+      chart.update('none');
+      hud.textContent = 'Ready…';
+    }
+
+    function step(ts) {
+      if (!last) last = ts;
+      const elapsed = ts - last;
+
+      if (elapsed >= stepInterval) {
+        last = ts;
+        // reveal next point
+        if (idx < MAX_POINTS) {
+          data[idx] = walker.next().value;
+          idx++;
+          chart.update('none'); // instant draw
+          hud.textContent = `Drawing ${idx}/${MAX_POINTS}`;
+        } else {
+          // finished: either loop or stop
+          hud.textContent = 'Complete';
+          cancelAnimationFrame(rafId);
+          rafId = null;
+          if (LOOP) {
+            setTimeout(() => {
+              reset();
+              // small pause before next run
+              setTimeout(() => { last = 0; rafId = requestAnimationFrame(step); }, START_DELAY);
+            }, 800);
+          }
+          return;
+        }
+      }
+      rafId = requestAnimationFrame(step);
+    }
+
+    // ---------- KICKOFF ----------
+    reset(); // blank screen
+    setTimeout(() => { last = 0; rafId = requestAnimationFrame(step); }, START_DELAY);
+  </script>
+</body>
+</html>
